@@ -11,10 +11,16 @@ public class ClientTUI {
 	private Scanner scanner;
 	private Client client;
 	
+	/**
+	 * @ensures Scanner is initialized
+	 */
 	public ClientTUI() {
 		scanner = new Scanner(System.in);
 	}
 	
+	/**
+	 * Establishes the connection between the screen and the client.
+	 */
 	public void startTUI() {
 		print("Please enter client description");
 		String description = scan();
@@ -50,6 +56,12 @@ public class ClientTUI {
 		scanner.close();
 	}
 	
+	/**
+	 * @requires line != null
+	 * @ensures Handles the commands from the screen.
+	 * @param line
+	 * @throws IOException
+	 */
 	public void handleUserCommand(String line) throws IOException {
 		String[] params = line.split(" ", 2);
 		String command = params[0];
@@ -58,19 +70,22 @@ public class ClientTUI {
 			printHelp();
 			break;
 		case "list":
-			client.handleListCommand(line);
+			client.handleListCommand();
 			break;
 		case "queue":
-			client.handleQueueCommand(line);
+			client.handleQueueCommand();
 			break;
 		case "move":
 			client.handleMoveCommand(line);
 			break;
+		case "ai":
+			client.handleAICommand(line);
+			break;
 		case "hint":
-			client.handleHintCommand(line);
+			client.handleHintCommand();
 			break;
 		case "rank":
-			client.handleRankCommand(line);
+			client.handleRankCommand();
 			break;
 		case "chat":
 			client.handleChatCommand(line);
@@ -85,7 +100,8 @@ public class ClientTUI {
 	}
 	
 	/**
-	 * This method ensures thread-safety. ClientTUI and Client threads may try to output to System.out at the same time. We fix this problem by making a synchronized print method.
+	 * @ensures thread-safety. ClientTUI and Client threads may try to output to System.out at the same time. 
+	 * We fix this potential problem by making a synchronized print method.
 	 * @param message
 	 */
 	public synchronized void print(String message) {
@@ -93,21 +109,30 @@ public class ClientTUI {
 		System.out.println(message);
 	}
 	
+	/**
+	 * @ensures scanner gets the next line
+	 * @return next String line
+	 */
 	public String scan() {
 		return scanner.nextLine();
 	}
 	
+	/**
+	 * @ensures the possible commands are printed to help the user
+	 */
 	public void printHelp() {
 		print("Possible commands: ");
-		print("help.....print this help menu");
-		print("list.....list all clients logged into server");
-		print("queue....queue for a game / unqueue");
-		print("move moveNumber1 [moveNumber2].....make a move indicated by the move number(s)");
-		print("hint.....request hint for current move");
-		print("rank.....print player rankings on the server");
-		print("chat message.....send message to the global chat");
-		print("whisper recipient message.....send message to a specific player (recipient)");
+		print("help.................................print this help menu");
+		print("list.................................list all clients logged into server");
+		print("queue................................queue for a game / unqueue");
+		print("move <moveNumber1> <moveNumber2>.....make a move indicated by the move number(s)");
+		print("ai <strategy>........................choose ai strategy (random, dumb, smart) or disable ai (none)");
+		print("hint.................................request hint for current move");
+		print("rank.................................print player rankings on the server");
+		print("chat <message>.......................send message to the global chat");
+		print("whisper <recipient> <message>........send message to a specific player (recipient)");
 	}
+	
 	
 	public static void main(String[] args) {
 		new ClientTUI().startTUI();

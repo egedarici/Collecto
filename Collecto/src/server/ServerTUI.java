@@ -6,7 +6,9 @@ import java.util.Set;
 
 public class ServerTUI {
 	
-	
+	/**
+	 * Establishes the connection between the screen and the server.
+	 */
 	public void startTUI(){
 		Scanner scanner = new Scanner(System.in);
 		Set<Integer> usedPorts = new HashSet<Integer>();
@@ -41,6 +43,11 @@ public class ServerTUI {
 		scanner.close();
 	}
 	
+	/**
+	 * @requires message != null
+	 * @ensures message is printed to screen
+	 * @param message
+	 */
 	public synchronized void print(String message) {
 		if (message == null) return;
 		System.out.println(message);

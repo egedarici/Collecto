@@ -2,7 +2,11 @@ package game;
 
 
 public class DumbStrategy implements Strategy{
-
+	/**
+	 * This method determines a possible move by comparing the valid moves.
+	 * @requires board != [0][0]
+	 * @return a possible move by checking the valid moves
+	 */
 	public Move determineMove(Board board) {
 		if (board.checkAnyValidSingleMove()) {
 			for (int m = 0; m <= 27; m++) {

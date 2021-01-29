@@ -4,14 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Board {
-
+	
+	/**
+	 * This is an array of length 49 which holds how many spaces are on the board.
+	 * @requires board.length == 49
+	 */
     private int[][] board;
-
+    
+    /**
+     * Constructor of Board
+     * @ensures board is initialized
+     */
     public Board() {
         board = new int[7][7];
     }
 
-
+    /**
+     * Constructor of Board
+     * @requires board2 == [7][7]
+     * @ensures board is initialized
+     */
     public Board(Board board2) {
         board = new int[7][7];
         for (int row = 0; row < 7; row++) {
@@ -21,6 +33,9 @@ public class Board {
         }
     }
     
+    /**
+     * @ensures Sets the 7x7 board with random numbers between 0 and 6. Middle of the board (3x3) is 0.
+     */
     public void setUpBoard() {
     	for (int row = 0; row < 7; row++) {
              for (int col = 0; col < 7; col++) {
@@ -40,18 +55,54 @@ public class Board {
              }
          }
     }
+    
+    /**
+     * @requires initialBoard.length == 49 
+     * @requires initialBoard's values must be between 0 and 6.
+     * @ensures board is set with initialBoard
+     * @param initialBoard
+     */
+    public void setUpBoard(int[] initialBoard) {
+    	for (int i = 0; i < initialBoard.length; i++) {
+           int row = i / 7;
+           int col = i % 7;
+           board[row][col] = initialBoard[i];
+    	}
+    }
 
-
+    /**
+     * @param row
+     * @param col
+     * @requires row > 0 && row <= 7
+     * @requires col > 0 && col <= 7
+     * @ensures Gets a specific ball on the board
+     * @return the number of the specific ball from the board
+     */
     public int getBall(int row, int col) {
         return board[row][col];
     }
 
-
+    /**
+     * @param row
+     * @param col
+     * @param colorNum
+     * @requires row > 0 && row <= 7
+     * @requires col > 0 && col <= 7
+     * @requires colorNum >= 0 && colorNum <= 6
+     * @ensures Sets a specific ball on the board
+     */
     public void setBall(int row, int col, int colorNum) {
         board[row][col] = colorNum;
     }
 
-
+    /**
+     * @param row
+     * @param col
+     * @requires row > 0 && row <= 7
+     * @requires col > 0 && col <= 7
+     * @ensures checks if balls are the same
+     * @return true if balls are same, false otherwise
+     */
     public boolean isSame(int row, int col) {
         int currentBall = board[row][col];
         if (row != 0 && board[row - 1][col] == currentBall) return true;
@@ -61,7 +112,10 @@ public class Board {
         return false;
     }
 
-
+    /**
+     * @return removed ball set
+     * @ensures removes the same colored balls that are next to each other.
+     */
     public BallSet removeSame() {
         List<Integer> markedBalls = new ArrayList<Integer>();
         BallSet removed = new BallSet();
@@ -86,7 +140,11 @@ public class Board {
         return removed;
     }
 
-
+    /**
+     * @param board2
+     * @return true if same, false otherwise
+     * @ensures checks if a board has the same components with a board2
+     */
     public boolean equals(Board board2) {
         for (int row = 0; row < 7; row++) {
             for (int col = 0; col < 7; col++) {
@@ -96,7 +154,10 @@ public class Board {
         return true;
     }
 
-
+    /**
+     * @return int array version of board
+     * @ensures converts the 7x7 board into one array of numbers
+     */
     public int[] convertToArray() {
         int[] converted = new int[49];
         int index = 0;
@@ -109,7 +170,10 @@ public class Board {
         return converted;
     }
 
-
+    /**
+     * @return total number of empty spaces
+     * @ensures returns the total number of empty spaces on the board
+     */
     public int emptySpaces() {
         int total = 0;
         for (int row = 0; row < 7; row++) {
@@ -120,23 +184,46 @@ public class Board {
         return total;
     }
 
-
+    /**
+     * @param move
+     * @requires move >= 0 && move <= 27
+     * @return true if valid, false otherwise
+     * @ensures checks if a move is considered legal or not
+     */
     public boolean isLegalMove(int move) {
         return move >= 0 && move <= 27;
     }
-
-
+    
+    /**
+     * This method prints the board's toString to the console
+     */
     public void printBoard() {
-        for (int row = 0; row < 7; row++) {
+    	System.out.println(toString());
+    }
+    
+    /**
+     * This method is the String format of board.
+     * @return the String version of board
+     */
+    public String toString() {
+    	String boardString = "";
+    	for (int row = 0; row < 7; row++) {
             for (int col = 0; col < 7; col++) {
-                System.out.print(board[row][col] + "  ");
+                boardString += board[row][col] + "  ";
             }
-            System.out.println();
+            boardString += "\n";
         }
-        System.out.println();
-        System.out.println();
+    	boardString += "\n";
+    	boardString += "\n";
+    	return boardString;
     }
 
+    /**
+     * @param move
+     * @return a move
+     * @requires move > 0 && move <= 27
+     * @ensures makes a move by checking the first move and the second move options
+     */
     public BallSet makeMove(Move move) {
     	if (move.isSingleMove()) {
     		return singleMove(move.getFirstMove());
@@ -146,7 +233,7 @@ public class Board {
     }
 
     /**
-     * @requires moveNum to be between 0 and 27 (inclusive)
+     * @requires moveNum > 0 && moveNum <= 27
      * @param moveNum
      */
     public BallSet singleMove(int moveNum) {
@@ -178,7 +265,11 @@ public class Board {
         return removeSame();
     }
 
-
+    /**
+     * @requires k >=0 && k <= 6
+     * @ensures moves a row up
+     * @param k
+     */
     public void moveUp(int k) {
         for (int row = 0; row < 7; row++) {
             if (board[row][k] != 0) continue;
@@ -197,7 +288,11 @@ public class Board {
         }
     }
 
-
+    /**
+     * @requires k >=0 && k <= 6
+     * @ensures moves a row down
+     * @param k
+     */
     public void moveDown(int k) {
         for (int row = 6; row >= 0; row--) {
             if (board[row][k] != 0) continue;
@@ -216,7 +311,11 @@ public class Board {
         }
     }
 
-
+    /**
+     * @requires k >=0 && k <= 6
+     * @ensures moves a column to left
+     * @param k
+     */
     public void moveLeft(int k) {
         for (int col = 0; col < 7; col++) {
             if (board[k][col] != 0) continue;
@@ -235,7 +334,11 @@ public class Board {
         }
     }
 
-
+    /**
+     * @requires k >=0 && k <= 6
+     * @ensures moves a column to right
+     * @param k
+     */
     public void moveRight(int k) {
         for (int col = 6; col >= 0; col--) {
             if (board[k][col] != 0) continue;
@@ -254,7 +357,13 @@ public class Board {
         }
     }
 
-
+    /**
+     * @requires moveNum1 > 0 && moveNum1 <= 27
+     * @requires moveNum2 > 0 && moveNum2 <= 27
+     * @ensures makes a double move by getting two moves
+     * @param moveNum1
+     * @param moveNum2
+     */
     public BallSet doubleMove(int moveNum1, int moveNum2) {
         BallSet removed1 = singleMove(moveNum1);
         BallSet removed2 = singleMove(moveNum2);
@@ -262,6 +371,12 @@ public class Board {
         return removed1;
     }
     
+    /**
+     * @requires move > 0 && move <= 27
+     * @ensures checks if a move is valid or not.
+     * @param move
+     * @return true if valid, false otherwise
+     */
     public boolean checkValidMove(Move move) {
     	if(move.isSingleMove()) {
     		return checkValidSingleMove(move.getFirstMove());
@@ -270,7 +385,12 @@ public class Board {
     	}
     }
 
-
+    /**
+     * @requires moveNum > 0 && moveNum <= 27
+     * @ensures checks if a move is a valid single move
+     * @param moveNum
+     * @return true if valid, false otherwise
+     */
     public boolean checkValidSingleMove(int moveNum) {
     	if (moveNum < 0 || moveNum > 27) return false;
     	
@@ -279,7 +399,10 @@ public class Board {
         return removed.getTotalBalls() != 0;
     }
 
-
+    /**
+     * @return true if valid, false otherwise
+     * @ensures checks if there are any valid single moves
+     */
     public boolean checkAnyValidSingleMove() {
         for (int move = 0; move <= 27; move++) {
             if (checkValidSingleMove(move)) return true;
@@ -287,7 +410,14 @@ public class Board {
         return false;
     }
 
-
+    /**
+     * @requires moveNum1 > 0 && moveNum1 <= 27
+     * @requires moveNum2 > 0 && moveNum2 <= 27
+     * @ensures checks if a double move is a valid double move
+     * @param moveNum1
+     * @param moveNum2
+     * @return true if valid, false otherwise
+     */
     public boolean checkValidDoubleMove(int moveNum1, int moveNum2) {
     	if (moveNum1 < 0 || moveNum1 > 27) return false;
     	if (moveNum2 < 0 || moveNum2 > 27) return false;
@@ -299,7 +429,11 @@ public class Board {
         BallSet removed = copy.singleMove(moveNum2);
         return removed.getTotalBalls() != 0;
     }
-
+    
+    /**
+     * @ensures checks if there are any valid double moves
+     * @return true if valid, false otherwise
+     */
     public boolean checkAnyValidDoubleMove(){
         if(checkAnyValidSingleMove()) return false;
         for (int move1 = 0; move1<=27;move1++){
@@ -309,7 +443,11 @@ public class Board {
         }
         return false;
     }
-
+    
+    /**
+     * @return true if over, false otherwise 
+     * @ensures checks if the game is over
+     */
     public boolean gameOver(){
         if(checkAnyValidSingleMove() || checkAnyValidDoubleMove()) return false;
         return true;

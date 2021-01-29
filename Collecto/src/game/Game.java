@@ -8,7 +8,15 @@ public class Game {
     private Player player2;
     private Board board;
     private boolean firstPlayersTurn;
-
+    
+    /**
+     * Constructor of Game
+     * @requires username1 != null 
+     * @requires username2 != null
+     * @ensures player1, player2, board and firstPlayersTurn is initialized
+     * @param username1
+     * @param username2
+     */
     public Game(String username1, String username2) {
         player1 = new Player(username1);
         player2 = new Player(username2);
@@ -17,6 +25,33 @@ public class Game {
     	firstPlayersTurn = true;
     }
     
+    /**
+     * @requires username1 != null 
+     * @requires username2 != null
+     * @requires initialBoard.length == 49 
+     * @requires initialBoard's values must be between 0 and 6.
+     * @ensures player1, player2, board and firstPlayersTurn is initialized
+     * @param username1
+     * @param username2
+     * @param initialBoard
+     */
+    public Game(String username1, String username2, int[] initialBoard) {
+    	player1 = new Player(username1);
+        player2 = new Player(username2);
+        board = new Board();
+        board.setUpBoard(initialBoard);
+    	firstPlayersTurn = true;
+    }
+    
+    /**
+     * @requires username != null
+     * @requires strategyName can be dumb, random or smart
+     * @ensures selected strategy is set to player's strategy
+     * @param username
+     * @param strategyName
+     * @throws PlayerNotFoundException
+     * @throws StrategyNotFoundException
+     */
     public void setStrategy(String username, String strategyName) throws PlayerNotFoundException, StrategyNotFoundException {
     	Strategy strategy = null;
     	if (strategyName.equals("random")) strategy = new RandomStrategy();
@@ -33,6 +68,12 @@ public class Game {
     	}	
     }
     
+    /**
+     * @requires username != null
+     * @ensures if it's player's turn or not
+     * @param username
+     * @return
+     */
     public boolean isPlayersTurn(String username) {
     	if (firstPlayersTurn) {
     		return getPlayer1().getUsername().equals(username);
@@ -42,9 +83,29 @@ public class Game {
     }
     
     /**
-     * 
-     * @return Returns if the game is over after this move.
+     * @ensures to get the current player who has to play
+     * @return player who has to play
      */
+    public Player getCurrentPlayer() {
+    	if (isFirstPlayersTurn()) {
+    		return player1;
+    	} else {
+    		return player2;
+    	}
+    }
+    
+    /**
+    * 
+    * @param username
+    * @param move
+    * @requires username != null
+    * @requires move >= 0 && move <= 27 
+    * @return Returns if the game is over after this move.
+    * @ensures the player who has the turn makes move
+    * @throws PlayerNotFoundException
+    * @throws WrongTurnException
+    * @throws IllegalMoveException
+    */
     public boolean makeMove(String username, Move move) throws PlayerNotFoundException, WrongTurnException, IllegalMoveException {
     	if (!player1.getUsername().equals(username) && !player2.getUsername().equals(username)) {
     		throw new PlayerNotFoundException();
@@ -69,6 +130,14 @@ public class Game {
     	return board.gameOver();
     }
     
+    /**
+     * @requires username != null
+     * @param username
+     * @return Returns if the game is over after this move.
+     * @ensures the player who has the turn makes move
+     * @throws PlayerNotFoundException
+     * @throws WrongTurnException
+     */
     public boolean makeMove(String username) throws PlayerNotFoundException, WrongTurnException {
     	if (!player1.getUsername().equals(username) && !player2.getUsername().equals(username)) {
     		throw new PlayerNotFoundException();
@@ -90,7 +159,21 @@ public class Game {
     }
     
     /**
-     * 
+     * @requires move >= 0 && move <= 27 
+     * @param move
+     * @return move of the current player
+     * @ensures the player who has the turn makes move
+     * @throws PlayerNotFoundException
+     * @throws WrongTurnException
+     * @throws IllegalMoveException
+     */
+    public boolean makeMove(Move move) throws PlayerNotFoundException, WrongTurnException, IllegalMoveException {
+    	String currentPlayer = getCurrentPlayer().getUsername();
+    	return makeMove(currentPlayer, move);
+    }
+    
+    /**
+     * @ensures to get the player who has most points
      * @return Returns 0 for draw, 1 or 2 for the winning player's number.
      */
     public int getWinner() {
@@ -109,25 +192,70 @@ public class Game {
     	}
     }
     
+    /**
+     * @ensures a getter for player1
+     * @return player1
+     */
     public Player getPlayer1() {
     	return player1;
     }
     
+    /**
+     * @ensures a getter for player2
+     * @return player2
+     */
     public Player getPlayer2() {
     	return player2;
     }
     
+    /**
+     * @requires username != null
+     * @ensures a getter for specific player
+     * @param username
+     * @return the specific player
+     */
+    public Player getPlayer(String username) {
+    	if (username.equals(player1.getUsername())) return player1;
+    	else if (username.equals(player2.getUsername())) return player2;
+    	else return null;
+    }
+    
+    /**
+     * @ensures to check if it's first player's turn
+     * @return
+     */
     public boolean isFirstPlayersTurn() {
     	return firstPlayersTurn;
     }
     
+    /**
+     * @requires username != null
+     * @ensures to get the opponent of a specific player
+     * @param username
+     * @return specific opponent
+     */
+    public String getOpponent(String username) {
+    	if (username.equals(player1.getUsername())) return player2.getUsername();
+    	else if (username.equals(player2.getUsername())) return player1.getUsername();
+    	else return null;
+    }
+    
+    /**
+     * @ensures a getter for board
+     * @return board
+     */
     public Board getBoard() {
     	return board;
     }
     
+    /**
+     * @ensures a getter for integer array version of board
+     * @return integer array version of board
+     */
     public int[] getBoardArray() {
     	return board.convertToArray();
     }
+    
     
     public static void main(String[] args) {
     	Game game = new Game("Alice", "Bob");

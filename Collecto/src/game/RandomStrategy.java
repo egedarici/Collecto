@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RandomStrategy implements Strategy{
-
+	/**
+	 * This method determines a random move by comparing the valid moves 
+	 * @requires board != [0][0]
+	 * @return a random move by checking the valid moves
+	 */
 	public Move determineMove(Board board) {
 		List<Move> possibleMoves = new ArrayList<Move>();
 		
